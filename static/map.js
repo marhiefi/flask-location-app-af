@@ -104,7 +104,6 @@ function placeItemsInMap(items) {
     // Add some markers to the map.
     // Note: The code uses the JavaScript Array.prototype.map() method to
     // create an array of markers based on the given "items" array.
-    // The map() method here has nothing to do with the Google Maps API.
     markers = items.map(function(item, i) {
       var marker = new google.maps.Marker({
         map: map,
