@@ -1,10 +1,14 @@
 import os
-import re
+from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, String, Integer, Float, create_engine
+from geoalchemy2.types import Geometry
+from shapely.geometry import Point
+from geoalchemy2.shape import to_shape
+from geoalchemy2.elements import WKTElement
+from geoalchemy2.functions import ST_DWithin
+from geoalchemy2.types import Geography
 from sqlalchemy.sql.expression import cast
-from sqlalchemy import func
-from sqlalchemy.types import UserDefinedType
+from geoalchemy2.shape import from_shape
 
 db = SQLAlchemy()
 
@@ -14,6 +18,9 @@ setup_db(app):
 '''
 def setup_db(app):
     database_path = os.getenv('DATABASE_URL', 'DATABASE_URL_WAS_NOT_SET?!')
+
+    # https://stackoverflow.com/questions/62688256/sqlalchemy-exc-nosuchmoduleerror-cant-load-plugin-sqlalchemy-dialectspostgre
+    database_path = database_path.replace('postgres://', 'postgresql://')
 
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -34,7 +41,7 @@ def db_drop_and_create_all():
 def insert_sample_locations():
     loc1 = SampleLocation(
         description='Brandenburger Tor',
-        geom=Geometry.point_representation(
+        geom=SampleLocation.point_representation(
             latitude=52.516247, 
             longitude=13.377711
         )
@@ -43,7 +50,7 @@ def insert_sample_locations():
 
     loc2 = SampleLocation(
         description='Schloss Charlottenburg',
-        geom=Geometry.point_representation(
+        geom=SampleLocation.point_representation(
             latitude=52.520608, 
             longitude=13.295581
         )
@@ -52,52 +59,27 @@ def insert_sample_locations():
 
     loc3 = SampleLocation(
         description='Tempelhofer Feld',
-        geom=Geometry.point_representation(
+        geom=SampleLocation.point_representation(
             latitude=52.473580, 
             longitude=13.405252
         )
     )
     loc3.insert()
 
-# This is needed to be able to have properties of type 
-# Geometry in your own models when using a MySql DB
-# For more reference see https://docs.sqlalchemy.org/en/14/core/custom_types.html
-class Geometry(UserDefinedType):
-    def get_col_spec(self):
-        return 'GEOMETRY' 
-
-    def bind_expression(self, bindvalue):
-        return func.ST_GeomFromText(bindvalue, SpatialConstants.SRID, type_=self)
-
-    def column_expression(self, col):
-        return func.ST_AsText(col, type_=self)
-
-    @staticmethod
-    def point_representation(latitude, longitude):
-        return 'POINT(%s %s)' % (longitude, latitude)
-
-    @staticmethod
-    def extract_from_point_representation(point_representation):
-        # Using a regex here would be better,
-        # Using a quick solution of stripping and splitting instead:
-        stripped_values = point_representation.replace("POINT(", "").replace(")", "")
-        coordinates = stripped_values.split(" ")
-        return [float(x) for x in coordinates]
-
-
 class SpatialConstants:
     SRID = 4326
-
 class SampleLocation(db.Model):
     __tablename__ = 'sample_locations'
 
     id = Column(Integer, primary_key=True)
     description = Column(String(80))
+    geom = Column(Geometry(geometry_type='POINT', srid=SpatialConstants.SRID))  
 
-    # This is how we will represent where is this item located in the map / in earth:
-    # as a POINT, that is a special (the simplest) type of Geometry
-    # see this for a nice explanation on alternatives: http://mysql.rjweb.org/doc.php/find_nearest_in_mysql
-    geom = Column(Geometry, nullable=False)
+    @staticmethod
+    def point_representation(latitude, longitude):
+        point = 'POINT(%s %s)' % (longitude, latitude)
+        wkb_element = WKTElement(point, srid=SpatialConstants.SRID)
+        return wkb_element
 
     @staticmethod
     def get_items_within_radius(lat, lng, radius):
@@ -107,23 +89,21 @@ class SampleLocation(db.Model):
         # we won't return tons of entries at once, 
         # paging needs to be in place for real usecase
         results = SampleLocation.query.filter(
-            func.st_distance_sphere(
-                SampleLocation.geom, 
-                func.ST_GeomFromText(Geometry.point_representation(lat, lng), SpatialConstants.SRID)
-            ) <= radius
-        ).limit(100).all() 
+            ST_DWithin(
+                cast(SampleLocation.geom, Geography),
+                cast(from_shape(Point(lng, lat)), Geography),
+                radius)
+            ).limit(100).all() 
 
-        print("results: ")
-        print(results)
         return [l.to_dict() for l in results]    
 
     def get_location_latitude(self):
-        point = Geometry.extract_from_point_representation(self.geom)
-        return point[1]
+        point = to_shape(self.geom)
+        return point.y
 
     def get_location_longitude(self):
-        point = Geometry.extract_from_point_representation(self.geom)
-        return point[0]
+        point = to_shape(self.geom)
+        return point.x  
 
     def to_dict(self):
         return {
