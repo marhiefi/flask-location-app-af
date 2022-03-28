@@ -66,7 +66,7 @@ var radiusToZoomLevel = [
 
 function refreshMarkers(mapCenter, zoomLevel) {
   console.log("refreshing markers")
-  //Update query cener and zoom so we know in referenec to what
+  //Update query center and zoom so we know in referenec to what
   //we queried for markers the last time and can decide if a re-query is needed
   queryCenter = mapCenter;
   queryZoom = zoomLevel;
