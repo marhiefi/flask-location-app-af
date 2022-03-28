@@ -5,6 +5,12 @@ from sqlalchemy import Column, String, Integer, Float, create_engine
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import func
 from sqlalchemy.types import UserDefinedType
+#from geoalchemy2.types import Geometry
+#from geoalchemy2.types import Geography
+#from geoalchemy2.shape import to_shape
+#from geoalchemy2.elements import WKTElement
+#from geoalchemy2.functions import ST_DWithin
+#from shapely.geometry import Point
 
 db = SQLAlchemy()
 
