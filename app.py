@@ -6,9 +6,10 @@ import traceback
 from forms import NewLocationForm
 from models import setup_db, SampleLocation, db_drop_and_create_all
 
+ # create the app
 def create_app(test_config=None):
-    # create and configure the app
     app = Flask(__name__)
+    #configure the app
     setup_db(app)
     CORS(app)
     
@@ -18,12 +19,21 @@ def create_app(test_config=None):
     """ uncomment at the first time running the app """
     #db_drop_and_create_all()
 
+    #define the basic route and its corresponding request handler
     @app.route('/', methods=['GET'])
+    #modify the main method to return the rendered template
     def home():
+        return render_template(
+            'index.html')
+    
+        
+    @app.route("/map", methods=['GET'])
+    #chnage def home to map
+    def map ():
         return render_template(
             'map.html', 
             map_key=os.getenv('GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_API_KEY_WAS_NOT_SET?!')
-        )
+        )    
         
     @app.route("/new-location", methods=['GET', 'POST'])
     def new_location():
@@ -104,6 +114,7 @@ def create_app(test_config=None):
     return app
 
 app = create_app()
+#check if the executed file is the main program and run the app
 if __name__ == '__main__':
     port = int(os.environ.get("PORT",5000))
     app.run(host='127.0.0.1',port=port,debug=True)
