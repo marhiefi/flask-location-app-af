@@ -13,6 +13,7 @@ from sqlalchemy.types import UserDefinedType
 #from shapely.geometry import Point
 
 db = SQLAlchemy()
+mysql = SQLAlchemy()
 
 '''
 setup_db(app):
@@ -23,16 +24,27 @@ def setup_db(app):
 
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.app = app
-    db.init_app(app)
+    #mysql
+    app.config['SQLALCHEMY_DATABASE_USER'] = 'magi'
+    app.config['SQLALCHEMY_DATABASE_PASSWORD'] = 'magi'
+    app.config['SQLALCHEMY_DATABASE_DB'] = 'AFIN'
+    app.config['SQLALCHEMY_DATABASE_HOST'] = 'localhost'
+    #db.app = app
+    #db.init_app(app)
+    mysql.app = app
+    mysql.init_app (app)
 
 '''
     drops the database tables and starts fresh
     can be used to initialize a clean database
 '''
-def db_drop_and_create_all():
-    db.drop_all()
-    db.create_all()
+# def db_drop_and_create_all():
+    #db.drop_all()
+    #db.create_all()
+    
+def mysql_drop_and_create_all():
+    mysql.drop_all()
+    mysql.create_all()
 
     # Initial sample data:
     insert_sample_locations()
@@ -94,7 +106,8 @@ class Geometry(UserDefinedType):
 class SpatialConstants:
     SRID = 4326
 
-class SampleLocation(db.Model):
+#class SampleLocation(db.Model):
+class SampleLocation(mysql.Model):
     __tablename__ = 'sample_locations'
 
     id = Column(Integer, primary_key=True)
@@ -142,12 +155,17 @@ class SampleLocation(db.Model):
         }    
 
     def insert(self):
-        db.session.add(self)
-        db.session.commit()
+        #db.session.add(self)
+        #db.session.commit()
+        mysql.session.add(self)
+        mysql.session.commit()
 
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        #db.session.delete(self)
+        #db.session.commit()
+        mysql.session.delete(self)
+        mysql.session.commit()
 
     def update(self):
-        db.session.commit()         
+        #db.session.commit() 
+        mysql.session.commit()         

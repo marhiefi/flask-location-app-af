@@ -1,12 +1,13 @@
 import os
 import sys
-from flask import Flask, request, abort, jsonify, render_template, url_for, flash, redirect
+from flask import Flask, request, abort, json, jsonify, render_template, url_for, flash, redirect
 from flask_cors import CORS
 import traceback
 from forms import NewLocationForm
-from models import setup_db, SampleLocation, db_drop_and_create_all
+from models import setup_db, SampleLocation, mysql_drop_and_create_all
+#from models import db_drop_and_create_all
 
- # create the app
+# create the app
 def create_app(test_config=None):
     app = Flask(__name__)
     #configure the app
@@ -25,10 +26,28 @@ def create_app(test_config=None):
     def home():
         return render_template(
             'index.html')
+     
+     #add method 'register' to render the register page once a request comes to /register  
+    @app.route('/register')
+    def register():
+        return render_template(
+            'register.html')
+        
+    #create method registeR, add a route /api/register
+    @app.route('/api/registeR', methods=['POST'])
+    def registeR ():
+        user_name = request.form['inputName']
+        user_email = request.form['inputEmail']
+        user_password = request.form['inputPassword']      
+        # validate the received values
+        if user_name and user_email and user_password:
+            return json.dumps({'html':'<span>Please submit</span>'})
+        else:
+            return json.dumps({'html':'<span>Please enter the required fields</span>'})
     
         
     @app.route("/map", methods=['GET'])
-    #chnage def home to map
+    #change def home to map
     def map ():
         return render_template(
             'map.html', 
