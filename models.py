@@ -10,10 +10,14 @@ from sqlalchemy.types import UserDefinedType
 #from geoalchemy2.shape import to_shape
 #from geoalchemy2.elements import WKTElement
 #from geoalchemy2.functions import ST_DWithin
-#from shapely.geometry import Point
+#from shapely.geometry import Point#importing extension from tutorial(video6)
+
+from flask_login import UserMixin, LoginManager
+from datetime import datetime
+
+
 
 db = SQLAlchemy()
-mysql = SQLAlchemy()
 
 '''
 setup_db(app):
@@ -24,27 +28,16 @@ def setup_db(app):
 
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    #mysql
-    app.config['SQLALCHEMY_DATABASE_USER'] = 'magi'
-    app.config['SQLALCHEMY_DATABASE_PASSWORD'] = 'magi'
-    app.config['SQLALCHEMY_DATABASE_DB'] = 'AFIN'
-    app.config['SQLALCHEMY_DATABASE_HOST'] = 'localhost'
-    #db.app = app
-    #db.init_app(app)
-    mysql.app = app
-    mysql.init_app (app)
+    db.app = app
+    db.init_app(app)
 
 '''
     drops the database tables and starts fresh
     can be used to initialize a clean database
 '''
-# def db_drop_and_create_all():
-    #db.drop_all()
-    #db.create_all()
-    
-def mysql_drop_and_create_all():
-    mysql.drop_all()
-    mysql.create_all()
+def db_drop_and_create_all():
+    db.drop_all()
+    db.create_all()
 
     # Initial sample data:
     insert_sample_locations()
@@ -107,7 +100,7 @@ class SpatialConstants:
     SRID = 4326
 
 #class SampleLocation(db.Model):
-class SampleLocation(mysql.Model):
+class SampleLocation(db.Model):
     __tablename__ = 'sample_locations'
 
     id = Column(Integer, primary_key=True)
@@ -155,17 +148,40 @@ class SampleLocation(mysql.Model):
         }    
 
     def insert(self):
-        #db.session.add(self)
-        #db.session.commit()
-        mysql.session.add(self)
-        mysql.session.commit()
+        db.session.add(self)
+        db.session.commit()
+        
 
     def delete(self):
-        #db.session.delete(self)
-        #db.session.commit()
-        mysql.session.delete(self)
-        mysql.session.commit()
+        db.session.delete(self)
+        db.session.commit()
+        
 
     def update(self):
-        #db.session.commit() 
-        mysql.session.commit()         
+        db.session.commit() 
+            
+        
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key= True)
+    username= db.Column(db.String(20), unique=True, nullable=False)
+    email= db.Column(db.String(120), unique=True, nullable=False)
+    #phone= db.Column(db.String(20), nullable=False)
+    image_file= db.Column(db.String(20), nullable=True)
+    password= db.Column(db.String(60), nullable= False)
+    pets = db.relationship('Pet', backref='pet_custodian', lazy=True)
+    
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+    
+class Pet(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    status_lostorfound = db.Column(db.String(5), unique=True, nullable=False)
+    date_lostorfound = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    petname = db.Column(db.String(20), unique=True, nullable=False)
+    pet_type = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    image_file= db.Column(db.String(20), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Pet('{self.petname}', '{self.date_posted}')"

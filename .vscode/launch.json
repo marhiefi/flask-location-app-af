@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+    
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development",
+                "DATABASE_URL": "mysql://mr9z435yphyqt111:dieo5zx49o5zxy9w@frauenloop-web-course-db.c9mi7ol8bwzw.eu-west-1.rds.amazonaws.com:3306/margarita_project",
+                "GOOGLE_MAPS_API_KEY": "AIzaSyA-A8u9Q4j3pwyH8CiDpbPSYuDGt24m_nc"
+
+            },
+            "args": [
+                "run",
+                "--no-debugger"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        }
+    ]
+}
