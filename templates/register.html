@@ -83,8 +83,7 @@
                             {% else %}
                                 {{ form.email(class='form-control form-control-lg') }}
                             {% endif %}
-
-                            
+  
 
                         {{ form.password.label(class='form-control-label') }} 
                         {% if form.password.errors %}
@@ -121,9 +120,7 @@
                               Already have an account? <a class="ml-5" href="{{ url_for('login') }}"
                                 >Log In</a
                               >
-                            </small>
-                                        
-                               
+                            </small>       
                     </form>
                 </div>
             </div>

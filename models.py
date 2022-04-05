@@ -164,10 +164,10 @@ class SampleLocation(db.Model):
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key= True)
     username= db.Column(db.String(20), unique=True, nullable=False)
-    email= db.Column(db.String(120), unique=True, nullable=False)
+    email= db.Column(db.String(30), unique=True, nullable=False)
     #phone= db.Column(db.String(20), nullable=False)
     image_file= db.Column(db.String(20))
-    password= db.Column(db.String(60), nullable= False)
+    password= db.Column(db.String(15), nullable= False)
     pets = db.relationship('Pet', backref='pet_custodian', lazy=True)
     
     def __repr__(self):
@@ -180,7 +180,7 @@ class Pet(db.Model):
     petname = db.Column(db.String(20), unique=True)
     pet_type = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)
-    image_file= db.Column(db.String(20))
+    image_file= db.Column(db.String(100))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
