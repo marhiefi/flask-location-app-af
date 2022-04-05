@@ -4,12 +4,11 @@ import sys
 from flask import Flask, request, abort, json, jsonify, render_template, url_for, flash, redirect
 from flask_cors import CORS
 import traceback
-from models import SpatialConstants, setup_db, SampleLocation, User, Pet, db, db_drop_and_create_all, SQLAlchemy
+from models import SpatialConstants, setup_db, SampleLocation, User, Pet, db, db_drop_and_create_all
 from forms import NewLocationForm, RegistrationForm, LoginForm
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
-from flask_login import login_user, current_user, logout_user, login_required
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 
 # create the app
 def create_app(test_config=None):
@@ -23,11 +22,12 @@ def create_app(test_config=None):
     #db_drop_and_create_all()
     
     csrf = CSRFProtect(app)
-    
     SECRET_KEY = os.urandom(32)
     app.config['SECRET_KEY'] = SECRET_KEY
     csrf.init_app(app)
+    
     bcrypt= Bcrypt(app)
+    
     login_manager= LoginManager(app)
     login_manager.init_app(app)
     login_manager.login_view='login' 
