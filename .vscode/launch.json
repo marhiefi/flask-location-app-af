@@ -4,6 +4,8 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    
+
 
     
         {
@@ -14,7 +16,7 @@
             "env": {
                 "FLASK_APP": "app.py",
                 "FLASK_ENV": "development",
-                "DATABASE_URL": "mysql://mr9z435yphyqt111:dieo5zx49o5zxy9w@frauenloop-web-course-db.c9mi7ol8bwzw.eu-west-1.rds.amazonaws.com:3306/margarita_project"
+                
             },
             "args": [
                 "run",
