@@ -15,8 +15,6 @@ from sqlalchemy.types import UserDefinedType
 from flask_login import UserMixin, LoginManager
 from datetime import datetime
 
-
-
 db = SQLAlchemy()
 
 '''
