@@ -166,22 +166,22 @@ class User(db.Model, UserMixin):
     username= db.Column(db.String(20), unique=True, nullable=False)
     email= db.Column(db.String(120), unique=True, nullable=False)
     #phone= db.Column(db.String(20), nullable=False)
-    image_file= db.Column(db.String(20), nullable=True)
+    image_file= db.Column(db.String(20))
     password= db.Column(db.String(60), nullable= False)
     pets = db.relationship('Pet', backref='pet_custodian', lazy=True)
     
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+        return f"User('{self.username}', '{self.email}')"
     
 class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     status_lostorfound = db.Column(db.String(5), unique=True, nullable=False)
     date_lostorfound = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    petname = db.Column(db.String(20), unique=True, nullable=False)
+    petname = db.Column(db.String(20), unique=True)
     pet_type = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)
-    image_file= db.Column(db.String(20), nullable=False)
+    image_file= db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Pet('{self.petname}', '{self.date_posted}')"
+        return f"Pet('{self.petname}', '{self.image_file}', '{self.status_lostorfound}')"

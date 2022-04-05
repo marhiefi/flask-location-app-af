@@ -1,20 +1,20 @@
 import os
 import sys
+#import secrets
 from flask import Flask, request, abort, json, jsonify, render_template, url_for, flash, redirect
 from flask_cors import CORS
 import traceback
-from models import SpatialConstants, setup_db, SampleLocation,  User, Pet, db, db_drop_and_create_all, SQLAlchemy
+from models import SpatialConstants, setup_db, SampleLocation, User, Pet, db, db_drop_and_create_all, SQLAlchemy
 from forms import NewLocationForm, RegistrationForm, LoginForm
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
-
-
 from flask_login import LoginManager
 from flask_login import login_user, current_user, logout_user, login_required
 
 # create the app
 def create_app(test_config=None):
     app = Flask(__name__)
+    
     #configure the app
     setup_db(app)
     CORS(app)
@@ -36,8 +36,7 @@ def create_app(test_config=None):
     @login_manager.user_loader
     def load_user(user_id):
        return User.query.get(int(user_id))
-   
-   
+    
     #templates 
     #define the basic route and its corresponding request handler
     @app.route('/', methods=['GET'])
@@ -47,6 +46,7 @@ def create_app(test_config=None):
             'index.html')
     
     #register page
+    #add method 'register' to render the register page once a request comes to /register 
     @app.route('/register', methods=['GET', 'POST'])
     def register ():
         if current_user.is_authenticated:
@@ -81,28 +81,16 @@ def create_app(test_config=None):
             user= User.query.filter_by(email=form.email.data).first()
             if user and bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
-                return  redirect(url_for('index'))
+                return redirect(url_for('index'))
             else:    
-               flash('Login Unsuccessful. Please check email and password.', 'danger')     
+               flash('Login Unsuccessful. Please check email and password or proceed to register first.', 'danger')     
         return render_template('login.html', title= 'Log In', form= form)
     
-          
-    ''' #add method 'register' to render the register page once a request comes to /register  
-    @app.route('/register')
-    def register():
-        return render_template(
-            'register.html')    
-    #create method registeR, add a route /api/register
-    @app.route('/api/registeR', methods=['POST'])
-    def registeR ():
-        user_name = request.form['inputName']
-        user_email = request.form['inputEmail']
-        user_password = request.form['inputPassword']      
-        # validate the received values
-        if user_name and user_email and user_password:
-            return json.dumps({'html':'<span>Please submit</span>'})
-        else:
-            return json.dumps({'html':'<span>Please enter the required fields</span>'}) '''
+    #logout page
+    @app.route('/logout')
+    def logout():
+        logout_user()
+        return redirect(url_for('index'))
        
     @app.route("/map", methods=['GET'])
     @login_required
