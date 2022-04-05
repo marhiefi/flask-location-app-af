@@ -1,7 +1,7 @@
 import os
 import re
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, String, Integer, Float, create_engine
+from sqlalchemy import Column, String, Integer, Text, Float, ForeignKey, create_engine
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import func
 from sqlalchemy.types import UserDefinedType
