@@ -8,11 +8,42 @@
             integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
             crossorigin="anonymous"
         />
-        <link href="../static/register.css" rel="stylesheet" />
+        <link
+        rel="stylesheet"
+        type="text/css"
+        href="{{ url_for('static', filename='register.css') }}"
+        />
         {% endblock %}       
  
     {% block body %}
         <div class="container">
+            <div class="header">
+                             
+                <nav
+                    class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom"
+                >
+                    <a
+                        href="/"
+                        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none"
+                    >
+                        <span class="fs-6">Lost and Found Pets App</span>
+                    </a>
+ 
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Found" class="nav-link active" aria-current="page"
+                                >Found</a
+                            >
+                        </li>
+                    </ul>
+                                             
+                </nav>
+                         
+            </div>
+
         </div>
     {% endblock %}
              
