@@ -97,7 +97,6 @@ class Geometry(UserDefinedType):
 class SpatialConstants:
     SRID = 4326
 
-#class SampleLocation(db.Model):
 class SampleLocation(db.Model):
     __tablename__ = 'sample_locations'
 

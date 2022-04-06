@@ -89,6 +89,18 @@ def create_app(test_config=None):
     def logout():
         logout_user()
         return redirect(url_for('index'))
+    
+    @app.route('/lost')
+    def lost ():
+        return render_template(
+            'lost.html'
+        )
+    
+    @app.route('/found')
+    def found ():
+        return render_template(
+            'found.html'
+        )
        
     @app.route("/map", methods=['GET'])
     @login_required

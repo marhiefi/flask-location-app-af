@@ -24,7 +24,7 @@
                         href="/"
                         class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none"
                     >
-                        <span class="fs-6">Pets Lost and Found App</span>
+                        <span class="fs-6">Lost and Found Pets App</span>
                     </a>
  
                     <ul class="nav nav-pills">
@@ -46,6 +46,7 @@
                     <h1 class="display-5 fw-bold text-center">Animal Friends in Need</h1>
                     <h1 class="display-6 fw text-center">Sign Up</h1>
                     <form id="form-signin" action="" method="POST">
+                        {{ form.csrf_token() }}
                         {% for field, errors in form.errors.items() %}
                     
                         <div class="alert alert-error">
