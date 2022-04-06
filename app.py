@@ -27,6 +27,7 @@ def create_app(test_config=None):
     csrf.init_app(app)
     
     bcrypt= Bcrypt(app)
+   
     
     login_manager= LoginManager(app)
     login_manager.init_app(app)
@@ -54,10 +55,7 @@ def create_app(test_config=None):
         form = RegistrationForm()
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user= User(username=form.username.data,
-            email=form.email.data, 
-            password= hashed_password)
-            #about_me=form.about_me.data, 
+            user= User(username=form.username.data, email=form.email.data, password= hashed_password)
             #area=form.lookup_address.data, 
             #pet_lostorfound=form.pet_lostorfound.data,
             #geom=SpatialConstants.point_representation(
