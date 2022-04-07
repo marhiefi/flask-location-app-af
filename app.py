@@ -64,8 +64,8 @@ def create_app(test_config=None):
             flash(f'Account created for {form.username.data}. Pease log in.', 'success')
             return redirect(url_for('login'))
         return render_template('register.html', title= 'Register', 
-          form= form)
-          #map_key=os.getenv('GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_API_KEY_WAS_NOT_SET?!'))
+          form= form, map_key=os.getenv('GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_API_KEY_WAS_NOT_SET?!'))
+          
           
     #login page
     @app.route('/login', methods=['GET', 'POST'])
@@ -93,39 +93,43 @@ def create_app(test_config=None):
     @app.route("/lost", methods=['GET', 'POST'])
     def lost ():
         form = LostPetForm()
+        if form.validate_on_submit(): 
+            pet = Pet (petname=form.petname.data,
+            status_lostorfound=form.status_lostorfound.data,
+            image_file=form.image_file.data,
+            pet_type=form.pet_type.data,
+            date_lostorfound=form.date_lostorfound.data,
+            description=form.description.data,
+            user_id=form.user_id.data)     
+            latitude = float(form.coord_latitude.data)
+            longitude = float(form.coord_longitude.data)
+            describe = form.describe.data
 
-        if form.validate_on_submit():            
-             latitude = float(form.coord_latitude.data)
-             longitude = float(form.coord_longitude.data)
-             description = form.description.data
-
-             location = SampleLocation(
-                 description=description,
+            location = SampleLocation(
+                 describe=describe,
                  geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude)
              )   
-             location.insert()
+            location.insert()
 
-             flash(f'Location point created!', 'success')
-             return redirect(url_for('login'))
+            flash(f'Entry for {form.petname.data} created!', 'success')
+            return redirect(url_for('index'))
 
         return render_template(
-            'lost.html',
+            'lost.html', title= 'Lost',
              form=form,
              map_key=os.getenv('GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_API_KEY_WAS_NOT_SET?!')
          ) 
 
-    
-    @app.route('/found', methods=['GET', 'POST'])
     def found ():
         form = FoundPetForm()
 
         if form.validate_on_submit():            
              latitude = float(form.coord_latitude.data)
              longitude = float(form.coord_longitude.data)
-             description = form.description.data
+             describe = form.describe.data
 
              location = SampleLocation(
-                 description=description,
+                 describe=ddescribe,
                  geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude)
              )   
              location.insert()
@@ -153,10 +157,10 @@ def create_app(test_config=None):
         try:
             latitude = float(request.args.get('lat'))
             longitude = float(request.args.get('lng'))
-            description = request.args.get('description')
+            describe = request.args.get('describe')
 
             location = SampleLocation(
-                description=description,
+                decrsibe=ddescribe,
                 geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude)
             )   
             location.insert()

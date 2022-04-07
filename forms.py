@@ -36,15 +36,24 @@ class LoginForm(FlaskForm):
    submit= SubmitField('Log In')
      
 class LostPetForm(FlaskForm):
-   description = StringField('Name your location (For ex: Dog Laika last seen here.)',
+   status_lostorfound = StringField('Please enter "Lost"', validators=[DataRequired()])
+   petname = StringField('Pet Name', validators=[DataRequired(), Length(min=2, max= 20)])
+   image_file= FileField('Optional but recommended: Upload a photo', validators=[FileAllowed(['jpg', 'png'])])
+   pet_type = TextAreaField ('What type of animal is it?', validators=[DataRequired()])
+   date_lostorfound = StringField('On what date was the pet lost?', validators=[DataRequired(), Length(min=2, max= 20)])
+   description = TextAreaField('Describe your lost pet, add a breed if it helps, any helpful detail about it getting lost', validators=[DataRequired()])
+   describe = StringField('Choose a title for your location (For ex: Dog Laika last seen here.)',
                            validators=[DataRequired(), Length(min=1, max=80)])
-   lookup_address = StringField('Find the address')
+   lookup_address = StringField('Find the location where your pet was lost by searching for a nearby address')
    coord_latitude = HiddenField('Latitude',validators=[DataRequired()])
-   coord_longitude = HiddenField('Longitude', validators=[DataRequired()])                    
-   submit = SubmitField('Save location on map')
+   coord_longitude = HiddenField('Longitude', validators=[DataRequired()])
+   user_id = HiddenField('Pet Custodian', validators=[DataRequired()])                  
+   submit = SubmitField('Save your entry')
+   
+
     
 class FoundPetForm(FlaskForm):   
-   description = StringField('Name your location (For ex: Husky found here.)',
+   describe = StringField('Choose a title for your location (For ex: Husky found here.)',
                            validators=[DataRequired(), Length(min=1, max=80)])
    lookup_address = StringField('Find the address')
    coord_latitude = HiddenField('Latitude',validators=[DataRequired()])
@@ -52,7 +61,7 @@ class FoundPetForm(FlaskForm):
    submit = SubmitField('Save location on map')
 
 class NewLocationForm(FlaskForm):
-    description = StringField('Location description',
+    describe = StringField('Location description',
                            validators=[DataRequired(), Length(min=1, max=80)])
     lookup_address = StringField('Search address')
 

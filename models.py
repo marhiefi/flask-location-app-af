@@ -5,12 +5,7 @@ from sqlalchemy import Column, String, Integer, Text, Float, ForeignKey, create_
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import func
 from sqlalchemy.types import UserDefinedType
-#from geoalchemy2.types import Geometry
-#from geoalchemy2.types import Geography
-#from geoalchemy2.shape import to_shape
-#from geoalchemy2.elements import WKTElement
-#from geoalchemy2.functions import ST_DWithin
-#from shapely.geometry import Point 
+
 
 from flask_login import UserMixin, LoginManager
 from datetime import datetime
@@ -42,7 +37,7 @@ def db_drop_and_create_all():
 
 def insert_sample_locations():
     loc1 = SampleLocation(
-        description='Brandenburger Tor',
+        describe='Brandenburger Tor',
         geom=Geometry.point_representation(
             latitude=52.516247, 
             longitude=13.377711
@@ -51,7 +46,7 @@ def insert_sample_locations():
     loc1.insert()
 
     loc2 = SampleLocation(
-        description='Schloss Charlottenburg',
+        describe='Schloss Charlottenburg',
         geom=Geometry.point_representation(
             latitude=52.520608, 
             longitude=13.295581
@@ -60,7 +55,7 @@ def insert_sample_locations():
     loc2.insert()
 
     loc3 = SampleLocation(
-        description='Tempelhofer Feld',
+        describe='Tempelhofer Feld',
         geom=Geometry.point_representation(
             latitude=52.473580, 
             longitude=13.405252
@@ -97,12 +92,25 @@ class Geometry(UserDefinedType):
 
 class SpatialConstants:
     SRID = 4326
+    '''@staticmethod
+    def point_representation(latitude, longitude):
+         point = 'POINT(%s %s)' % (longitude, latitude)
+         wkb_element = WKTElement(point, srid=SpatialConstants.SRID)
+         return wkb_element
+    @staticmethod
+    def get_location_latitude(geom):
+         point = to_shape(geom)
+         return point.y
+    @staticmethod
+    def get_location_longitude(geom):
+         point = to_shape(geom)
+         return point.x '''
 
 class SampleLocation(db.Model):
     __tablename__ = 'sample_locations'
 
     id = Column(Integer, primary_key=True)
-    description = Column(String(80))
+    describe = Column(String(80))
 
     # This is how we will represent where is this item located in the map / in earth:
     # as a POINT, that is a special (the simplest) type of Geometry
@@ -142,7 +150,7 @@ class SampleLocation(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'description': self.description,
+            'describe': self.describe,
             'location': {
                 'lng': self.get_location_longitude(),
                 'lat': self.get_location_latitude()
@@ -181,8 +189,39 @@ class Pet(db.Model):
     petname = db.Column(db.String(20), unique=True)
     pet_type = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)
+    geom = db.Column(Geometry, nullable=False)
     image_file= db.Column(db.String(100))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __repr__(self):
-        return f"Pet('{self.petname}', '{self.image_file}', '{self.status_lostorfound}')"
+    def __repr__(self):  
+        return f"Pet('{self.petname}', '{self.image_file}', '{self.status_lostorfound}', '{self.type}', '{self.description}','{self.geom}')"
+                   
+    '''def to_dict(self):
+         return {
+             'id': self.id,
+             'username': self.username,
+             'email':self.email,
+             'image_file':self.image_file,
+             'about_me':self.about_me,
+             'level':self.level,
+             'location': {
+                 'lng': SpatialConstants.get_location_longitude(self.geom),
+                 'lat': SpatialConstants.get_location_latitude(self.geom)
+             }
+         }  
+
+    @staticmethod
+    def get_items_within_radius(lat, lng, radius):
+         """Return all sample locations within a given radius (in meters)"""
+
+         #TODO: The arbitrary limit = 100 is just a quick way to make sure 
+         # we won't return tons of entries at once, 
+         # paging needs to be in place for real usecase
+         results = User.query.filter(
+             ST_DWithin(
+                 cast(User.geom, Geography),
+                 cast(from_shape(Point(lng, lat)), Geography),
+                 radius)
+             ).limit(100).all() 
+
+         return [l.to_dict() for l in results]    '''

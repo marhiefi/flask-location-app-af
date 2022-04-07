@@ -49,6 +49,9 @@
             </div>
 
         </div>
+        <br>
+        <p class="fs-4 fw-bold">Lost Pet Entry Form</p>
+        <br>
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
@@ -58,16 +61,56 @@
                 </div>
                 {% endif %}
                 <div class="form-group">
-                    {{ form.description.label(class="form-control-label fs-5") }}
-                    {% if form.description.errors %}
-                        {{ form.description(class="form-control form-control-lg is-invalid") }}
+                    {{ form.petname.label(class="form-control-label fs-5") }}
+                    {% if form.petname.errors %}
+                        {{ form.petname(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
-                            {% for error in form.description.errors %}
+                            {% for error in form.petname.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.description(class="form-control form-control-lg") }}
+                        {{ form.petname(class="form-control form-control-lg")}}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.status_lostorfound.label(class="form-control-label fs-5") }}
+                    {% if form.status_lostorfound.errors %}
+                        {{ form.status_lostorfound(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.status_lostorfound.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.status_lostorfound(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                        {{ form.description.label(class="form-control-label fs-5") }}
+                        {% if form.description.errors %}
+                            {{ form.description (class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.description.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.description(class="form-control form-control-lg") }}
+                        {% endif %}
+                </div>   
+
+                <div class="form-group">
+                    {{ form.describe.label(class="form-control-label fs-5") }}
+                    {% if form.describe.errors %}
+                        {{ form.describe(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.describe.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.describe(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
