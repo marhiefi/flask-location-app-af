@@ -106,7 +106,7 @@ def create_app(test_config=None):
              )   
              location.insert()
 
-             flash(f'New location point created!', 'success')
+             flash(f'Location point created!', 'success')
              return redirect(url_for('login'))
 
         return render_template(
@@ -131,8 +131,8 @@ def create_app(test_config=None):
              )   
              location.insert()
 
-             flash(f'New location point created!', 'success')
-             return redirect(url_for('register'))
+             flash(f'Location point created!', 'success')
+             return redirect(url_for('login'))
 
         return render_template(
             'found.html',
@@ -149,31 +149,6 @@ def create_app(test_config=None):
             map_key=os.getenv('GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_API_KEY_WAS_NOT_SET?!')
         )    
         
-    @app.route("/new-location", methods=['GET', 'POST'])
-    def new_location():
-         form = NewLocationForm()
-
-         if form.validate_on_submit():            
-             latitude = float(form.coord_latitude.data)
-             longitude = float(form.coord_longitude.data)
-             description = form.description.data
-
-             location = SampleLocation(
-                 description=description,
-                 geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude)
-             )   
-             location.insert()
-
-             flash(f'New location created!', 'success')
-             return redirect(url_for('index'))
-
-         return render_template(
-             'new-location.html',
-             form=form,
-             map_key=os.getenv('GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_API_KEY_WAS_NOT_SET?!')
-         ) 
-
-    
     @app.route("/api/store_item")
     def store_item():
         try:
