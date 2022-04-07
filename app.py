@@ -76,10 +76,10 @@ def create_app(test_config=None):
         if form.validate_on_submit():
             user= User.query.filter_by(email=form.email.data).first()
             if user and bcrypt.check_password_hash(user.password, form.password.data):
+                print('Login succeeds!!')
                 login_user(user, remember=form.remember.data)
-                return redirect(url_for('index'))
-            else:    
-               flash('Login Unsuccessful. Please check email and password or proceed to register first.', 'danger')     
+                return redirect(url_for('home'))
+            flash('Login Unsuccessful. Please check email and password or proceed to register first.', 'danger')     
         return render_template('login.html', title= 'Log In', form= form)
     
     #logout page
