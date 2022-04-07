@@ -36,35 +36,35 @@
                     href="/"
                     class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none"
                 >
-                    <span class="fs-4">Lost and Found Pets App</span>
+                    <span class="fs-4 fw-bold">Lost and Found Pets App</span>
                 </a>
 
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a href="/" class="nav-link active" aria-current="page">Home</a>
+                        <a href="/" class="nav-link active fs-5" aria-current="page">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="/register" class="nav-link">Register</a>
+                        <a href="/register" class="nav-link fs-5">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a href="/login" class="nav-link">Log In</a>
+                        <a href="/login" class="nav-link fs-5">Log In</a>
                     </li>
                     <li class="nav-item">
-                        <a href="/" class="nav-link">Vets</a>
+                        <a href="/" class="nav-link fs-5">Vets</a>
                     </li>
                 </ul>
                                          
             </nav>
                                   
         </header>
-        <div class="p-1 mb-5 bg-warning rounded-4">
+        <div class="p-1 mb-5 bg-danger rounded-4">
             <div class="container-fluid py-3 text-center">
-                <h2 class="display-5 fw-bold">
-                    Animal Friends in Need</h2>
-                <h4 class="display-8">Please help reunite lost pets with their humans. Have you lost or found a pet?</h4>   
-                <div class="justify-content-md-center">
-                    <a class="btn btn-lg btn-success btn-block m-2 rounded-3" href="{{ url_for('lost') }}">Lost</a>
-                    <a class="btn btn-lg  btn-success btn-block m-2 rounded-3" href="{{ url_for('found') }}" 
+                <h3 class="display-5 text-white fw-bold">
+                    Animal Friends in Need</h3>
+                <h5 class="display-8">Please help reunite lost pets with their humans. Have you lost or found a pet?</h5>   
+                <div class="btn-group btn-group-lg justify-content-md-center">
+                    <a class="btn btn-success btn-block m-2 rounded-3" href="{{ url_for('lost') }}">Lost</a>
+                    <a class="btn btn-success btn-block m-2 rounded-3" href="{{ url_for('found') }}" 
                     >Found</a>
                 </div>
             </div>
@@ -90,7 +90,7 @@
             <div class="col-sm">
                 <div class="col-lg-14">
                 <br>
-                <h4 class="fw-bold"> Log in before you create an entry for a pet </h5> 
+                <h4 class="fw-bold"> Log in before you create an entry for a pet </h4> 
                 <br>
                 <h4 class="fw-bold">Lost</h4> 
 
@@ -120,7 +120,7 @@
                  
         <footer class="footer">
                          
-            <p>&copy; AFIN 2022</p>
+            <p class ="fs-5 p-2">&copy; AFIN 2022</p>
                      
         </footer>
 

@@ -24,15 +24,15 @@
                         href="/"
                         class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none"
                     >
-                        <span class="fs-6">Lost and Found Pets App</span>
+                        <span class="fs-3 fw-bold">Animal Friends in Need</span>
                     </a>
  
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a href="/" class="nav-link">Home</a>
+                            <a href="/" class="nav-link fs-5">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/register" class="nav-link active" aria-current="page"
+                            <a href="/register" class="nav-link active fs-5" aria-current="page"
                                 >Register</a
                             >
                         </li>
@@ -42,9 +42,8 @@
                          
             </div>
             <div class="p-5 mb-4 bg-light rounded-3">
-                <div class="container-fluid py-5">
-                    <h1 class="display-5 fw-bold text-center">Animal Friends in Need</h1>
-                    <h1 class="display-6 fw text-center">Sign Up</h1>
+                <div class="container-fluid py-5"> 
+                    <h1 class="display-6 fw-bold text-center fs-2">Sign Up</h1>
                     <form id="form-signin" action="" method="POST">
                         {{ form.csrf_token() }}
                         {% for field, errors in form.errors.items() %}
@@ -56,7 +55,7 @@
                     
                         {{ form.hidden_tag() }}
                                 <label for="inputName" class="sr-only">Name</label>
-                                {{ form.username.label(class='form-control-label') }}
+                                {{ form.username.label(class='form-control-label fs-5') }}
         
                                 {% if form.username.errors %}
                                 {{ form.username(class='form-control form-control-lg is-invalid') }}
@@ -72,7 +71,7 @@
                                   {% endif %}
                                 
                                 <label for="inputEmail" class="sr-only">Email</label>
-                            {{ form.email.label(class='form-control-label') }} 
+                            {{ form.email.label(class='form-control-label fs-5') }} 
                             {% if form.email.errors %}
                             {{ form.email(class='form-control form-control-lg is-invalid') }}
 
@@ -86,7 +85,7 @@
                             {% endif %}
   
 
-                        {{ form.password.label(class='form-control-label') }} 
+                        {{ form.password.label(class='form-control-label fs-5') }} 
                         {% if form.password.errors %}
                         {{ form.password(class='form-control form-control-lg is-invalid') }}
                         <div class="invalid-feedback">
@@ -100,7 +99,7 @@
                         {% endif %}
 
                         <div class="mb-3">
-                            {{ form.confirm_password.label(class='form-control-label') }}
+                            {{ form.confirm_password.label(class='form-control-label fs-5') }}
                             {% if form.confirm_password.errors %}
                             {{ form.confirm_password(class='form-control form-control-lg is-invalid') }}
                             <div class="invalid-feedback">
@@ -117,8 +116,8 @@
                             {{ form.submit(class='btn btn-lg btn-primary btn-block') }}
                           </div>
                           <div class="border-top pt-3">
-                            <small class="text-muted">
-                              Already have an account? <a class="ml-5" href="{{ url_for('login') }}"
+                            <small class="text-muted fs-5">
+                              Already have an account? <a class="ml-5 fs-5" href="{{ url_for('login') }}"
                                 >Log In</a
                               >
                             </small>       
@@ -128,7 +127,7 @@
                      
             <footer class="footer">
                              
-                <p>&copy; AFIN 2022</p>
+                <p class="fs-5">&copy; AFIN 2022</p>
                          
             </footer>
  
