@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'layout.html' %} {% block head %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -24,11 +22,9 @@
     />
     <script src="{{ url_for('static', filename='map.js') }}"></script>
 
-    {% block head %}{% endblock %}
-</head>
+{% endblock %}
 
-<body>
-             
+{% block body %}          
     <div class="container">
                  
         <header class="header">
@@ -103,18 +99,18 @@
                 <h5>Found</h5>
                                  
                 <p>
-                    If you found an animal please create an entry for it with the button above.
+                    If you found a pet please create an entry for it with the button above
                 </p>
 
                  <br>                
                 <h5>Vets and Clinics</h5>
                                  
-                <p>You need to bring a found animal to a vet? Please check for vets and clinics in your area here. </p>
+                <p>You need to bring a found animal to a vet? Please check for vets and clinics in your area here </p>
                  <br> 
 
                 <h5>Animal Shelters</h5>
                                  
-                <p>You would like to contact an animal shelter? Please look for one here. </p>
+                <p>You would like to contact an animal shelter? Please look for one here </p>
                 <br>    
        
                 </div>                        
@@ -129,5 +125,4 @@
 
              
     </div>
-</body>
-</html>
+{% endblock %}

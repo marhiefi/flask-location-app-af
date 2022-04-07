@@ -10,7 +10,7 @@ from sqlalchemy.types import UserDefinedType
 #from geoalchemy2.shape import to_shape
 #from geoalchemy2.elements import WKTElement
 #from geoalchemy2.functions import ST_DWithin
-#from shapely.geometry import Point#importing extension from tutorial(video6)
+#from shapely.geometry import Point 
 
 from flask_login import UserMixin, LoginManager
 from datetime import datetime
@@ -71,6 +71,7 @@ def insert_sample_locations():
 # This is needed to be able to have properties of type 
 # Geometry in your own models when using a MySql DB
 # For more reference see https://docs.sqlalchemy.org/en/14/core/custom_types.html
+
 class Geometry(UserDefinedType):
     def get_col_spec(self):
         return 'GEOMETRY' 
@@ -107,6 +108,10 @@ class SampleLocation(db.Model):
     # as a POINT, that is a special (the simplest) type of Geometry
     # see this for a nice explanation on alternatives: http://mysql.rjweb.org/doc.php/find_nearest_in_mysql
     geom = Column(Geometry, nullable=False)
+
+    @staticmethod
+    def point_representation(latitude, longitude):
+        return 'POINT(%s %s)' % (longitude, latitude)
 
     @staticmethod
     def get_items_within_radius(lat, lng, radius):

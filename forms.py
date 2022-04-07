@@ -34,12 +34,22 @@ class LoginForm(FlaskForm):
    password= PasswordField('Password', validators=[DataRequired()])
    remember= BooleanField('Remember Me')
    submit= SubmitField('Log In')
-   
-#class LostPet(FlaskForm()):
-   
-   
-#class FoundPet(FlaskForm()): 
-
+     
+class LostPetForm(FlaskForm):
+   description = StringField('Name your location (For ex: Dog Laika last seen here.)',
+                           validators=[DataRequired(), Length(min=1, max=80)])
+   lookup_address = StringField('Find the address')
+   coord_latitude = HiddenField('Latitude',validators=[DataRequired()])
+   coord_longitude = HiddenField('Longitude', validators=[DataRequired()])                    
+   submit = SubmitField('Save location on map')
+    
+class FoundPetForm(FlaskForm):   
+   description = StringField('Name your location (For ex: Husky found here.)',
+                           validators=[DataRequired(), Length(min=1, max=80)])
+   lookup_address = StringField('Find the address')
+   coord_latitude = HiddenField('Latitude',validators=[DataRequired()])
+   coord_longitude = HiddenField('Longitude', validators=[DataRequired()])                    
+   submit = SubmitField('Save location on map')
 
 class NewLocationForm(FlaskForm):
     description = StringField('Location description',
