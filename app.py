@@ -45,8 +45,7 @@ def create_app(test_config=None):
         return render_template(
             'index.html')
     
-    #register page
-    #add method 'register' to render the register page once a request comes to /register 
+    #register page: add method 'register' to render the register page once a request comes to /register 
     @app.route('/register', methods=['GET', 'POST'])
     def register ():
         if current_user.is_authenticated:
