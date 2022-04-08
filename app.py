@@ -18,7 +18,7 @@ def create_app(test_config=None):
     CORS(app)
      
     """ uncomment at the first time running the app """
-    #db_drop_and_create_all()
+    db_drop_and_create_all()
     
     csrf = CSRFProtect(app)
     SECRET_KEY = os.urandom(32)
@@ -41,7 +41,7 @@ def create_app(test_config=None):
     #define the basic route and its corresponding request handler
     @app.route('/', methods=['GET'])
     #modify the main method to return the rendered template
-    def home():
+    def index():
         return render_template(
             'index.html')
     
@@ -89,27 +89,30 @@ def create_app(test_config=None):
         return redirect(url_for('index'))
     
     
-    #lost pet page
+    #lost pet entry page
     @app.route("/lost", methods=['GET', 'POST'])
+    @login_required
     def lost ():
         form = LostPetForm()
         if form.validate_on_submit(): 
             pet = Pet (petname=form.petname.data,
             status_lostorfound=form.status_lostorfound.data,
             image_file=form.image_file.data,
-            pet_type=form.pet_type.data,
             date_lostorfound=form.date_lostorfound.data,
             description=form.description.data,
-            user_id=form.user_id.data)     
-            latitude = float(form.coord_latitude.data)
-            longitude = float(form.coord_longitude.data)
-            describe = form.describe.data
-
-            location = SampleLocation(
-                 describe=describe,
-                 geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude)
-             )   
-            location.insert()
+            pet_custodian=current_user, 
+            geom=SpatialConstants.point_representation(
+                form.coord_latitude.data,form.coord_longitude.data))    
+            #latitude = float(form.coord_latitude.data)
+            #longitude = float(form.coord_longitude.data)
+            #describe = form.describe.data 
+            #location = SampleLocation(
+                 #describe=describe,
+                 #geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude))   
+            #location.insert()
+            
+            db.session.add(pet)
+            db.session.commit()
 
             flash(f'Entry for {form.petname.data} created!', 'success')
             return redirect(url_for('index'))
@@ -120,6 +123,7 @@ def create_app(test_config=None):
              map_key=os.getenv('GOOGLE_MAPS_API_KEY', 'GOOGLE_MAPS_API_KEY_WAS_NOT_SET?!')
          ) 
 
+    #found pet entry page
     def found ():
         form = FoundPetForm()
 
@@ -135,7 +139,7 @@ def create_app(test_config=None):
              location.insert()
 
              flash(f'Location point created!', 'success')
-             return redirect(url_for('login'))
+             return redirect(url_for('index'))
 
         return render_template(
             'found.html',

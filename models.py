@@ -92,19 +92,19 @@ class Geometry(UserDefinedType):
 
 class SpatialConstants:
     SRID = 4326
-    '''@staticmethod
+    @staticmethod
     def point_representation(latitude, longitude):
-         point = 'POINT(%s %s)' % (longitude, latitude)
-         wkb_element = WKTElement(point, srid=SpatialConstants.SRID)
-         return wkb_element
+        return 'POINT(%s %s)' % (longitude, latitude)
+
     @staticmethod
-    def get_location_latitude(geom):
-         point = to_shape(geom)
-         return point.y
+    def get_location_latitude(self):
+        point = Geometry.extract_from_point_representation(self.geom)
+        return point[1]
     @staticmethod
-    def get_location_longitude(geom):
-         point = to_shape(geom)
-         return point.x '''
+    def get_location_longitude(self):
+        point = Geometry.extract_from_point_representation(self.geom)
+        return point[0]
+    
 
 class SampleLocation(db.Model):
     __tablename__ = 'sample_locations'
@@ -177,7 +177,7 @@ class User(db.Model, UserMixin):
     email= db.Column(db.String(30), unique=True, nullable=False)
     image_file= db.Column(db.String(20))
     password= db.Column(db.String(60), nullable= False)
-    pets = db.relationship('Pet', backref='pet_custodian', lazy=True)
+    pets = db.relationship('Pet', backref='petcustodian', lazy=True)
     
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
@@ -187,41 +187,54 @@ class Pet(db.Model):
     status_lostorfound = db.Column(db.String(5), unique=True, nullable=False)
     date_lostorfound = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     petname = db.Column(db.String(20), unique=True)
-    pet_type = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text, nullable=False)
     geom = db.Column(Geometry, nullable=False)
     image_file= db.Column(db.String(100))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    pet_custodian = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):  
         return f"Pet('{self.petname}', '{self.image_file}', '{self.status_lostorfound}', '{self.type}', '{self.description}','{self.geom}')"
+    
+    @staticmethod
+    def point_representation(latitude, longitude):
+        return 'POINT(%s %s)' % (longitude, latitude)
+     
+    def get_location_latitude(self):
+        point = Geometry.extract_from_point_representation(self.geom)
+        return point[1]
+
+    def get_location_longitude(self):
+        point = Geometry.extract_from_point_representation(self.geom)
+        return point[0] 
                    
-    '''def to_dict(self):
+    def to_dict(self):
          return {
              'id': self.id,
-             'username': self.username,
-             'email':self.email,
-             'image_file':self.image_file,
-             'about_me':self.about_me,
-             'level':self.level,
+             'petname': self.petname,
+             'status_lostorfound':self.status_lostorfound,
+             'date_lostorfound':self.date_lostorfound,
+             'image_file': self.image_file,
+             'description': self.description,
              'location': {
                  'lng': SpatialConstants.get_location_longitude(self.geom),
                  'lat': SpatialConstants.get_location_latitude(self.geom)
              }
          }  
 
+     
     @staticmethod
     def get_items_within_radius(lat, lng, radius):
-         """Return all sample locations within a given radius (in meters)"""
+        """Return all sample locations within a given radius (in meters)"""
 
-         #TODO: The arbitrary limit = 100 is just a quick way to make sure 
-         # we won't return tons of entries at once, 
-         # paging needs to be in place for real usecase
-         results = User.query.filter(
-             ST_DWithin(
-                 cast(User.geom, Geography),
-                 cast(from_shape(Point(lng, lat)), Geography),
-                 radius)
-             ).limit(100).all() 
+        #TODO: The arbitrary limit = 100 is just a quick way to make sure 
+        # we won't return tons of entries at once, 
+        # paging needs to be in place for real usecase
+        results = Pet.query.filter(
+            func.st_distance_sphere(
+                Pet.geom, 
+                func.ST_GeomFromText(Geometry.point_representation(lat, lng), SpatialConstants.SRID)
+            ) <= radius
+        ).limit(100).all() 
 
-         return [l.to_dict() for l in results]    '''
+        
+        return [l.to_dict() for l in results]   
