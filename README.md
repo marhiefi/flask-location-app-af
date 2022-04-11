@@ -1,2 +1,2 @@
 
-## flask location-based app with MySQL and Google Maps API.
+## Flask location-based app with MySQL and Google Maps API. Deployed on Heroku.
